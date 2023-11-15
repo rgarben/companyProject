@@ -1,3 +1,4 @@
+<%@page import="org.apache.commons.codec.digest.DigestUtils"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@page import="com.jacaranda.model.Company"%>
@@ -20,6 +21,7 @@
 <title>Delete Employee</title>
 </head>
 <%
+String msj = "";
 Employee user = null;
 try {
 	user = DbRepository.find(Employee.class, (int) session.getAttribute("id"));
@@ -75,7 +77,7 @@ if (user != null) {
 					</div>
 					<input id="lastName" name="lastName" type="text"
 						required="required" class="form-control"
-						value="<%=user.getFirstName()%>" readonly="readonly">
+						value="<%=user.getLastName()%>" readonly="readonly">
 				</div>
 			</div>
 		</div>
@@ -130,6 +132,40 @@ if (user != null) {
 			</div>
 		</div>
 	</form>
+
+
+	<form>
+		<div class="form-group row">
+			<label for="passE" class="col-4 col-form-label">Contraseña</label>
+			<div class="col-8">
+				<div class="input-group">
+					<div class="input-group-prepend">
+						<div class="input-group-text">
+							<i class="fa fa-address-card"></i>
+						</div>
+					</div>
+					<input id="passE" name="passE"
+						placeholder="Inserta tu contraseña para poder editar"
+						type="password" required="required" class="form-control">
+				</div>
+			</div>
+		</div>
+		<div class="form-group row">
+			<div class="offset-4 col-8">
+				<button name="editar2" type="submit" class="btn btn-primary">Editar</button>
+			</div>
+		</div>		
+	</form>
+		<%
+		if (request.getParameter("editar2") != null) {
+			if (user.getPassword().equals(DigestUtils.md5Hex(request.getParameter("passE")))) {
+				response.sendRedirect("./editarUser.jsp");
+			} else {
+				msj = "La contraseña no es correcta.";
+			}
+		}
+		%>
+		<%=msj%>
 </body>
 <%
 } else {

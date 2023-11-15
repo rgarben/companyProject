@@ -69,6 +69,18 @@ public class Employee {
 		this.password = password;
 		this.rol = rol;
 	}
+	
+	public Employee(int id, Date dateOfBirth, String email, String lastName, String firstName, String gender, Company company, String password) {
+		super();
+		this.id = id;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+		this.gender = gender;
+		this.dateOfBirth = dateOfBirth;
+		this.company = company;
+		this.password = password;
+	}
 
 	public String getPassword() {
 		return password;

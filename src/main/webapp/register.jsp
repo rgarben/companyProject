@@ -22,6 +22,8 @@
 </head>
 <%
 List<Company> listCompany = new ArrayList<>();
+String mostrar="";
+Employee em=null;
 try {
 	listCompany = DbRepository.findAll(Company.class);
 
@@ -30,18 +32,26 @@ try {
 }
 
 if (request.getParameter("submit") != null) {
-	try {
-		Employee em = new Employee(Date.valueOf(request.getParameter("dateOfBirth")), request.getParameter("email"),
-		request.getParameter("lastName"), request.getParameter("name"), request.getParameter("gender"),
-		DbRepository.searchCompany(request.getParameter("company")),
-		DigestUtils.md5Hex(request.getParameter("pass")));
-		DbRepository.addObject(em);
-	} catch (Exception e) {
-		e.printStackTrace();
+	if(request.getParameter("pass").equals(request.getParameter("pass2"))){		
+	
+		try {
+			em = new Employee(Date.valueOf(request.getParameter("dateOfBirth")), request.getParameter("email"),
+			request.getParameter("lastName"), request.getParameter("name"), request.getParameter("gender"),
+			DbRepository.searchCompany(request.getParameter("company")),
+			DigestUtils.md5Hex(request.getParameter("pass")));
+			DbRepository.addObject(em);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		mostrar = String.format("<details close><summary>Detalles de la pelicula añadida</summary><label>Id: %s, <br>Nombre: %s,  <br>Apellidos: %s,<br>Email: %s,  <br>Genero: %s, <br> Cumple: %s, <br> Company: %s</label></details>", 
+				em.getId(), em.getFirstName(), em.getLastName(), em.getEmail(), em.getGender(), em.getDateOfBirth(), em.getCompany().getName());
+	}else{
+		out.println("El password debe ser el mismo");
 	}
 }
 %>
 <body>
+
 	<form>
 		<div class="form-group row">
 			<label for="name" class="col-4 col-form-label">Nombre</label>
@@ -126,7 +136,21 @@ if (request.getParameter("submit") != null) {
 							<i class="fa fa-address-card"></i>
 						</div>
 					</div>
-					<input id="pass" name="pass" type="text" class="form-control"
+					<input id="pass" name="pass" type="password" class="form-control"
+						required="required">
+				</div>
+			</div>
+		</div>
+		<div class="form-group row">
+			<label for="pass2" class="col-4 col-form-label">Repita password</label>
+			<div class="col-8">
+				<div class="input-group">
+					<div class="input-group-prepend">
+						<div class="input-group-text">
+							<i class="fa fa-address-card"></i>
+						</div>
+					</div>
+					<input id="pass2" name="pass2" type="password" class="form-control"
 						required="required">
 				</div>
 			</div>
@@ -142,5 +166,8 @@ if (request.getParameter("submit") != null) {
 			</div>
 		</div>
 	</form>
+	<%if(request.getParameter("submit") != null  && request.getParameter("pass").equals(request.getParameter("pass2"))){
+	out.println(mostrar); 
+}%>
 </body>
 </html>
